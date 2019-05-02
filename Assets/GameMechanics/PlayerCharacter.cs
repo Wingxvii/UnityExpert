@@ -48,4 +48,5 @@ public class PlayerCharacter : MonoBehaviour
         rb.velocity = Vector2.zero;
         Debug.Log("Game Over!");
     }
+
 }
