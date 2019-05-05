@@ -195,7 +195,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   groundEnemies:
-  - {fileID: 1043275108669382, guid: d4c5043fcfb24a742a8435cef50bba22, type: 2}
+  - {fileID: 1388540643309766, guid: 2d148715719bf2d418a5ef77a5d2b00c, type: 2}
   airEnemies:
   - {fileID: 1043275108669382, guid: d4c5043fcfb24a742a8435cef50bba22, type: 2}
 --- !u!1 &529930424 stripped
