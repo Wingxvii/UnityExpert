@@ -3,6 +3,8 @@ using UnityStandardAssets._2D;
 
 public class PlayerCharacter : MonoBehaviour
 {
+    public HUD hud;
+
     private Rigidbody2D rb;
 
     private int lives = GameplayConstants.STARTING_LIVES;
@@ -12,12 +14,22 @@ public class PlayerCharacter : MonoBehaviour
 	void Start ()
     {
         rb = this.GetComponent<Rigidbody2D>();
+        SetInitialHUD();
+    }
+
+    private void SetInitialHUD()
+    {
+        hud.UpdateLives(lives);
+        hud.UpdateEnemies(enemyScore);
+        hud.UpdateScore(0);
     }
 
     void Update()
     {
         distanceScore = Mathf.Max(distanceScore, (int)this.transform.position.x);
         int totalScore = distanceScore * GameplayConstants.SCORE_DISTANCE_MULTIPLIER + enemyScore * GameplayConstants.SCORE_ENEMY_MULTIPLIER;
+
+        hud.UpdateScore(totalScore);
     }
 
     void OnCollisionEnter2D(Collision2D col)
@@ -31,7 +43,8 @@ public class PlayerCharacter : MonoBehaviour
                 Enemy enemy = col.gameObject.GetComponent<Enemy>();
                 if (enemy != null)
                 {
-                    enemy.Squash();
+                    enemyScore += enemy.Squash();
+                    hud.UpdateEnemies(enemyScore);
                 }
             }
         }
@@ -48,6 +61,7 @@ public class PlayerCharacter : MonoBehaviour
     private void KillCharacter()
     {
         lives -= 1;
+        hud.UpdateLives(lives);
 
         if (lives > 0)
         {
