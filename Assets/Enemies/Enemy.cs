@@ -11,6 +11,7 @@ public class Enemy : MonoBehaviour
     internal CircleCollider2D circleColl;
     internal SpriteRenderer sr;
     internal Color originalColor;
+    internal MapToken token;
 
     void Awake()
     {
@@ -18,6 +19,7 @@ public class Enemy : MonoBehaviour
         circleColl = this.GetComponent<CircleCollider2D>();
         sr = this.GetComponent<SpriteRenderer>();
         originalColor = sr.color;
+        token = this.GetComponent<MapToken>();
         
         Setup();
     }
@@ -58,6 +60,7 @@ public class Enemy : MonoBehaviour
         SetScaleByHealth(maxHealth);
         sr.color = originalColor;
         rb.velocity = Vector2.zero;
+        token.SetTokenActive(true);
     }
 
     internal virtual void SetScaleByHealth(int currentHealth)
@@ -102,5 +105,6 @@ public class Enemy : MonoBehaviour
         // Give the player a chance to jump off.
         yield return new WaitForSeconds(0.5f);
         circleColl.isTrigger = true;
+        token.SetTokenActive(false);
     }
 }

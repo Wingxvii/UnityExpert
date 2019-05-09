@@ -14,6 +14,9 @@ public class PlayerCharacter : MonoBehaviour
 	void Start ()
     {
         rb = this.GetComponent<Rigidbody2D>();
+        MapToken token = this.GetComponent<MapToken>();
+        token.SetTokenActive(true);
+
         SetInitialHUD();
     }
 
