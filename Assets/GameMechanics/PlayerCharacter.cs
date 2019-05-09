@@ -10,12 +10,12 @@ public class PlayerCharacter : MonoBehaviour
     private int lives = GameplayConstants.STARTING_LIVES;
     private int distanceScore = 0;
     private int enemyScore = 0;
+    //private PlatformerCharacter2D platformCharacter;
 	
 	void Start ()
     {
         rb = this.GetComponent<Rigidbody2D>();
-        MapToken token = this.GetComponent<MapToken>();
-        token.SetTokenActive(true);
+        //platformCharacter = this.GetComponent<PlatformerCharacter2D>();
 
         SetInitialHUD();
     }

@@ -5,6 +5,13 @@ using UnityEngine.UI;
 
 public class HUD : MonoBehaviour
 {
+    public enum Language
+    {
+        English, Spanish, French
+    }
+
+    public Language language;
+
     public Text scoreText;
     private string scoreString = "Scored: ";
     public Text livesText;

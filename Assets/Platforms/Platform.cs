@@ -10,6 +10,7 @@ public class Platform : MonoBehaviour
 		if (spriteRenderer != null)
 		{
             MatchColliderToSpriteSize(spriteRenderer);
+            GenerateRadarImage(spriteRenderer);
 		}
 	}
 
@@ -36,5 +37,21 @@ public class Platform : MonoBehaviour
         coll.size = new Vector2(GameplayConstants.SLIP_ZONE_WIDTH, spriteRenderer.size.y);
         coll.offset = new Vector2((isLeft ? -0.5f : 0.5f) * (spriteRenderer.size.x - GameplayConstants.SLIP_ZONE_WIDTH), 0.5f * spriteRenderer.size.y);
         coll.sharedMaterial = slipMaterial;
+    }
+
+    private void GenerateRadarImage( SpriteRenderer spriteRenderer)
+    {
+        GameObject clone = new GameObject(spriteRenderer.gameObject.name + "_radar");
+        clone.transform.parent = spriteRenderer.transform;
+
+        clone.transform.localPosition = Vector3.zero;
+        clone.layer = GameplayConstants.LAYER_Radar;
+
+        SpriteRenderer sr = clone.AddComponent<SpriteRenderer>();
+        sr.sprite = spriteRenderer.sprite;
+        sr.drawMode = spriteRenderer.drawMode;
+        sr.material = spriteRenderer.material;
+        sr.size = spriteRenderer.size;
+        sr.color = Color.blue;
     }
 }
