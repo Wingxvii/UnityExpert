@@ -1,4 +1,10 @@
 ﻿using UnityEngine;
+/*
+    Walker class based on instructor written version
+    
+    - Original by Dustin Carroll
+    - Version 2 by John Wang
+*/
 
 public class Walker : Enemy
 {
@@ -33,7 +39,7 @@ public class Walker : Enemy
         else
         {
             rayHit = Physics2D.Raycast(this.transform.position, GetDirection() * Vector3.right, 1f, mask);
-            if (rayHit.collider != null)
+            if (rayHit.collider != null && rayHit.collider != backWallCollider) //added back wall collider to prevent it from triggering the change direction prompt
             {
                 // Don't run into walls!
                 ChangeDirection();

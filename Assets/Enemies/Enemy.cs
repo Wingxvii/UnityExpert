@@ -1,6 +1,11 @@
 ﻿using System.Collections;
 using UnityEngine;
-
+/*
+    Enemy class based on instructor written version
+    
+    - Original by Dustin Carroll
+    - Version 2 by John Wang
+*/
 public class Enemy : MonoBehaviour
 {
     public int maxHealth = 1;
@@ -11,6 +16,7 @@ public class Enemy : MonoBehaviour
     internal CircleCollider2D circleColl;
     internal SpriteRenderer sr;
     internal Color originalColor;
+    internal Collider2D backWallCollider;
 
     void Awake()
     {
@@ -18,8 +24,8 @@ public class Enemy : MonoBehaviour
         circleColl = this.GetComponent<CircleCollider2D>();
         sr = this.GetComponent<SpriteRenderer>();
         originalColor = sr.color;
-        
-        Setup();
+
+        Setup();    
     }
 
     void OnTriggerEnter2D(Collider2D col)
@@ -42,6 +48,8 @@ public class Enemy : MonoBehaviour
     internal virtual void WakeUp()
     {
         isVulnerable = true;
+
+
     }
 
     internal virtual void GoToSleep()
@@ -58,6 +66,11 @@ public class Enemy : MonoBehaviour
         SetScaleByHealth(maxHealth);
         sr.color = originalColor;
         rb.velocity = Vector2.zero;
+
+        backWallCollider = GameObject.FindGameObjectWithTag("BackWall").GetComponent<Collider2D>();
+        //ignores enemy collisions
+        Physics2D.IgnoreCollision(circleColl, backWallCollider);
+
     }
 
     internal virtual void SetScaleByHealth(int currentHealth)
