@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 /*
     Enemy class based on instructor written version
@@ -18,8 +19,15 @@ public class Enemy : MonoBehaviour
     internal Color originalColor;
     internal Collider2D backWallCollider;
 
+    //this queue is used to signal function calls to the child
+    internal Queue<int> functionQueue;
+
+
     void Awake()
     {
+
+        functionQueue = new Queue<int>();
+
         rb = this.GetComponent<Rigidbody2D>();
         circleColl = this.GetComponent<CircleCollider2D>();
         sr = this.GetComponent<SpriteRenderer>();
@@ -59,6 +67,9 @@ public class Enemy : MonoBehaviour
 
     public virtual void Spawn(Vector3 position)
     {
+        //sends a signal to indicate spawn was called
+        functionQueue.Enqueue(1);
+
         isVulnerable = false;
         health = maxHealth;
         circleColl.isTrigger = false;
@@ -106,8 +117,10 @@ public class Enemy : MonoBehaviour
     {
         sr.color = Color.black;
         isVulnerable = false;
+        rb.gravityScale = 3;
         rb.velocity = 10f * Vector2.up;
         StartCoroutine("DelayedDeath");
+        Debug.Log("Died");
     }
 
     internal IEnumerator DelayedDeath()

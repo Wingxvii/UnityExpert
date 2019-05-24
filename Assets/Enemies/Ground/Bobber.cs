@@ -16,26 +16,32 @@ public class Bobber : Enemy
     public float range = 4.0f;
     public float speed = 0.2f;
 
-    public float targetUp;
-    public float targetDown;
-    public int goingDir = 0;
+    private float targetUp;
+    private float targetDown;
+    private int goingDir = 1;
 
-
-    void Start()
-    {
-        //determine targets
-        targetUp = this.transform.position.y + (range / 2.0f);
-        targetDown = this.transform.position.y - (range / 2.0f);
-
-
-        goingDir = 1;
-
-    }
 
     // Update is called once per frame
     void Update()
     {
-        rb.velocity = new Vector2(rb.velocity.x, 0.0f);
+
+        if (functionQueue.Count > 0)
+        {
+            //queue listener for spawn calls
+            switch (functionQueue.Dequeue())
+            {
+                case 1: //this handles spawn instances
+                    DetermineTargets();                             //redetermines range targets
+                    rb.velocity = new Vector2(rb.velocity.x, 0.0f); //relock velocity
+                    rb.gravityScale = 0;                            //turns off gravity
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+
         //check if direction needs to be reversed
         if (this.transform.position.y < targetDown) {
            goingDir = 1;
@@ -69,6 +75,13 @@ public class Bobber : Enemy
         }
 
 
+    }
+
+    //determines targets for bobbing range
+    private void DetermineTargets() {
+        //determine targets
+        targetUp = this.transform.position.y + (range / 2.0f);
+        targetDown = this.transform.position.y - (range / 2.0f);
     }
 
     private void FixedUpdate()
