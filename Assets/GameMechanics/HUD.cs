@@ -11,14 +11,38 @@ public class HUD : MonoBehaviour
     }
 
     public Language language;
-
+    public LocalizationManager dict;
     public Text scoreText;
     private string scoreString = "Scored: ";
     public Text livesText;
     private string livesString = "Life: ";
     public Text enemyText;
     private string enemyString = "Foes: ";
-    
+
+    private void Awake()
+    {
+
+        dict = this.GetComponent<LocalizationManager>();
+        if (language == Language.English) {
+            dict.Setup("English");
+        }
+        if (language == Language.French)
+        {
+            dict.Setup("French");
+        }
+        if (language == Language.Spanish)
+        {
+            dict.Setup("Spanish");
+        }
+
+        scoreString = dict.getTranslation("Score");
+        livesString = dict.getTranslation("Life");
+        enemyString = dict.getTranslation("Foes");
+        
+        Debug.Log(scoreString + " "+ livesString + " " + enemyString);
+
+    }
+
     private void UpdateText(Text textObj, string words, bool value)
     {
         textObj.text = Concatenate(words, value);
@@ -76,3 +100,5 @@ public class HUD : MonoBehaviour
         return builder.ToString();
     }
 }
+
+
