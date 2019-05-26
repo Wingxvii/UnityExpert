@@ -9,7 +9,7 @@
 public class Walker : Enemy
 {
     public float speed = 1f;
-    internal LayerMask mask = 1;
+    internal LayerMask mask = (1 << 9) | (1 << 0);
 
     internal bool movingRight;
     

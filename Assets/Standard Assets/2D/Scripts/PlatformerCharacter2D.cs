@@ -12,10 +12,10 @@ namespace UnityStandardAssets._2D
         public float maxVerticalVelocity = 10f;
         public LayerMask m_WhatIsGround;
 
-        private Transform m_GroundCheck;
+        public Transform m_GroundCheck;
         public float k_GroundedRadius = 0.1f;
         private bool m_Grounded;
-        private Transform m_CeilingCheck;
+        public Transform m_CeilingCheck;
         const float k_CeilingRadius = .01f;
         private Animator m_Anim;
         private Rigidbody2D m_Rigidbody2D;

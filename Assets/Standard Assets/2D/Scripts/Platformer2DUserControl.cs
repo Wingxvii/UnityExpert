@@ -7,6 +7,7 @@ namespace UnityStandardAssets._2D
     [RequireComponent(typeof(PlatformerCharacter2D))]
     public class Platformer2DUserControl : MonoBehaviour
     {
+
         public enum Runner
         {
             Player, Computer
@@ -32,7 +33,6 @@ namespace UnityStandardAssets._2D
 
         private void FixedUpdate()
         {
-
             if (runState == Runner.Computer)
             {
                 AutoRunFixedUpdate();
@@ -49,16 +49,36 @@ namespace UnityStandardAssets._2D
             m_Jump = false;
         }
 
+
         #region AutoRun
+
+        public LayerMask hitMask = (1 << 8) | (1 << 0);     //default mask and enemy mask
+        public float forwardCheckOffset = 0.3f;
+        public float checkDistanceForward = 10.0f;
+
         private void AutoRunFixedUpdate() {
 
             float h = 0.0f;
             bool crouch = false;
             bool jump = false;
 
-            //ground check
-            if (m_Character.IsOnGround())
-            {
+            //used to check if theres an obstacle forward from the head
+            RaycastHit2D headHit = Physics2D.Raycast(m_Character.m_CeilingCheck.position + forwardCheckOffset * Vector3.right, Vector2.right, checkDistanceForward, hitMask);
+
+            //used to check if theres an obstacle forward from the leg
+            RaycastHit2D legHit = Physics2D.Raycast(m_Character.m_GroundCheck.position + forwardCheckOffset * Vector3.right + 0.25f * Vector3.up, Vector2.right, checkDistanceForward, hitMask);
+
+            //used to check if theres more ground to walk on
+            RaycastHit2D walkCheck = Physics2D.Raycast(m_Character.m_GroundCheck.position + forwardCheckOffset * Vector3.right, Vector2.right, checkDistanceForward, hitMask);
+
+            //used to check if there is something to land on
+            RaycastHit2D dropCheck = Physics2D.Raycast(m_Character.m_GroundCheck.position, Vector2.down, checkDistanceForward, hitMask);
+
+            //used to check if there is something to land on further ahead
+            RaycastHit2D forwardDropCheck = Physics2D.Raycast(m_Character.m_GroundCheck.position + forwardCheckOffset * Vector3.down, Vector2.down, checkDistanceForward, hitMask);
+
+            //this is our state machine
+            if (true) {
 
             }
 
