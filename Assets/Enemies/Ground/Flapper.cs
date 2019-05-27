@@ -1,7 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
+    Flapper enemy class used to define the behaviour of the flapper enemy
+    - By John Wang
+*/
 public class Flapper : Enemy
 {
 

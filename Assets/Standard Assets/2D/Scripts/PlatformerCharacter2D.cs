@@ -1,6 +1,11 @@
 using System;
 using UnityEngine;
-
+/*
+    Controller class based on instructor written version
+    
+    - Original by Dustin Carroll
+    - Version 2 by John Wang
+*/
 namespace UnityStandardAssets._2D
 {
     public class PlatformerCharacter2D : MonoBehaviour

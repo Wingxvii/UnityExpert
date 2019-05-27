@@ -2,7 +2,12 @@
 using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
+/*
+    Localization class based on instructor written version 
 
+    - Original by Dustin Carroll
+    - Version 2 by John Wang
+*/
 public class LocalizationManager : MonoBehaviour
 {
 

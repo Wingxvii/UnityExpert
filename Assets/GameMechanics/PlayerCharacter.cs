@@ -1,6 +1,11 @@
 ﻿using UnityEngine;
 using UnityStandardAssets._2D;
-
+/*
+    Player Character class based on instructor written version
+    
+    - Original by Dustin Carroll
+    - Version 2 by John Wang
+*/
 public class PlayerCharacter : MonoBehaviour
 {
     public HUD hud;
@@ -9,7 +14,7 @@ public class PlayerCharacter : MonoBehaviour
 
     private int lives = GameplayConstants.STARTING_LIVES;
     private int distanceScore = 0;
-    private int enemyScore = 0;
+    public int enemyScore = 0;
     //private PlatformerCharacter2D platformCharacter;
 	
 	void Start ()
@@ -35,23 +40,6 @@ public class PlayerCharacter : MonoBehaviour
         hud.UpdateScore(totalScore);
     }
 
-    void OnCollisionEnter2D(Collision2D col)
-    {
-        if (col.gameObject.tag == GameplayConstants.TAG_Enemy)
-        {
-            Vector3 enemyPos = col.collider.bounds.center;
-            float enemyWidth = col.collider.bounds.extents.x;
-            if (enemyPos.y < this.transform.position.y && Mathf.Abs(enemyPos.x - this.transform.position.x) < enemyWidth)
-            {
-                Enemy enemy = col.gameObject.GetComponent<Enemy>();
-                if (enemy != null)
-                {
-                    enemyScore += enemy.Squash();
-                    hud.UpdateEnemies(enemyScore);
-                }
-            }
-        }
-    }
 
     void OnTriggerEnter2D(Collider2D col)
     {
