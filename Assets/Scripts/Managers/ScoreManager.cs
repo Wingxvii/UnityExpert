@@ -7,6 +7,7 @@ namespace Nightmare
     public class ScoreManager : MonoBehaviour
     {
         public static int score;
+        private int levelThreshhold = 1000;
 
         Text sText;
 
@@ -21,6 +22,17 @@ namespace Nightmare
         void Update ()
         {
             sText.text = "Score: " + score;
+            if (score >= levelThreshhold)
+            {
+                AdvanceLevel();
+            }
+        }
+
+        private void AdvanceLevel()
+        {
+            levelThreshhold = score + 1000;
+            LevelManager lm = FindObjectOfType<LevelManager>();
+            lm.AdvanceLevel();
         }
     }
 }

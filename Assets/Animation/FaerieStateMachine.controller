@@ -38,8 +38,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd71a2b110a7cf8419e429d9360689da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  faerieCircle: {fileID: 0}
-  angerTimer: 0
   nextState: 1
 --- !u!114 &114688338913463316
 MonoBehaviour:
@@ -63,8 +61,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37fb632e7cb877540b2515a43f64eccb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  faerieCircle: {fileID: 0}
-  angerTimer: 0
   nextState: 0
 --- !u!1101 &1101191007861394930
 AnimatorStateTransition:
@@ -149,7 +145,8 @@ AnimatorState:
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 1101191007861394930}
-  m_StateMachineBehaviours: []
+  m_StateMachineBehaviours:
+  - {fileID: 114210544693101322}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -175,7 +172,8 @@ AnimatorState:
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 1101474056073489590}
-  m_StateMachineBehaviours: []
+  m_StateMachineBehaviours:
+  - {fileID: 114688338913463316}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -201,7 +199,8 @@ AnimatorState:
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 1101765026756117886}
-  m_StateMachineBehaviours: []
+  m_StateMachineBehaviours:
+  - {fileID: 114716844975718828}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1

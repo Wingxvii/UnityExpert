@@ -87,6 +87,7 @@ namespace Nightmare
 
         void Death ()
         {
+            EventManager.TriggerEvent("Sound", this.transform.position);
             anim.SetTrigger ("Dead");
 
             enemyAudio.clip = deathClip;

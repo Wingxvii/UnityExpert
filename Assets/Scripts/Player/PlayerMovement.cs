@@ -3,7 +3,7 @@ using UnitySampleAssets.CrossPlatformInput;
 
 namespace Nightmare
 {
-    public class PlayerMovement : MonoBehaviour
+    public class PlayerMovement : PausibleObject
     {
         public float speed = 6f;            // The speed that the player will move at.
 
@@ -26,10 +26,20 @@ namespace Nightmare
             // Set up references.
             anim = GetComponent <Animator> ();
             playerRigidbody = GetComponent <Rigidbody> ();
+
+            StartPausible();
+        }
+
+        void OnDestroy()
+        {
+            StopPausible();
         }
 
         void FixedUpdate ()
         {
+            if (isPaused)
+                return;
+
             // Store the input axes.
             float h = CrossPlatformInputManager.GetAxisRaw("Horizontal");
             float v = CrossPlatformInputManager.GetAxisRaw("Vertical");

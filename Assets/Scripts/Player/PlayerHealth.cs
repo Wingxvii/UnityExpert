@@ -23,6 +23,7 @@ namespace Nightmare
         bool isDead;
         bool damaged;
 
+
         void Awake()
         {
             // Setting up the references.
@@ -112,6 +113,11 @@ namespace Nightmare
             playerShooting.enabled = false;
 
 
+        }
+
+        public void RestartLevel()
+        {
+            EventManager.TriggerEvent("GameOver");
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace Nightmare
 {
-    public class EnemyAttack : MonoBehaviour
+    public class EnemyAttack : PausibleObject
     {
         public float timeBetweenAttacks = 0.5f;
         public int attackDamage = 10;
@@ -22,6 +22,13 @@ namespace Nightmare
             playerHealth = player.GetComponent <PlayerHealth> ();
             enemyHealth = GetComponent<EnemyHealth>();
             anim = GetComponent <Animator> ();
+
+            StartPausible();
+        }
+
+        void OnDestroy()
+        {
+            StopPausible();
         }
 
         void OnTriggerEnter (Collider other)
@@ -45,7 +52,10 @@ namespace Nightmare
         }
 
         void Update ()
-        {            
+        {
+            if (isPaused)
+                return;
+            
             // Add the time since Update was last called to the timer.
             timer += Time.deltaTime;
 

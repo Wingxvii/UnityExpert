@@ -2,7 +2,7 @@
 
 namespace Nightmare
 {
-    public class EnemyManager : MonoBehaviour
+    public class EnemyManager : PausibleObject
     {
         private PlayerHealth playerHealth;
         public GameObject enemy;
@@ -20,10 +20,19 @@ namespace Nightmare
         void OnEnable()
         {
             playerHealth = FindObjectOfType<PlayerHealth>();
+            StartPausible();
+        }
+
+        void OnDestroy()
+        {
+            StopPausible();
         }
 
         void Update()
         {
+            if (isPaused)
+                return;
+
             timer -= Time.deltaTime;
             if (timer <= 0f)
             {

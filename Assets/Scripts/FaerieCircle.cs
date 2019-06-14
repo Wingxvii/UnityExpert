@@ -5,6 +5,23 @@ using UnityEngine.AI;
 
 public class FaerieCircle : MonoBehaviour
 {
+    [System.Serializable]
+    public struct FaerieMood
+    {
+        public Color mainFaerieColor;
+        public Color mainCircleColor;
+        public Color accentColor;
+        public Color glowColor;
+        public float glowIntensity;
+        public float areaCost;
+        public float windForce;
+        public float speed;
+        public float minimumTime;
+    }
+
+    public FaerieMood happyFaerie;
+    public FaerieMood angryFaerie;
+
     private float faerieSpeed;
     public int grenadeStock = 1;
     public float cullRadius = 5f;
@@ -12,20 +29,35 @@ public class FaerieCircle : MonoBehaviour
     private float radius = 1f;
     private ParticleSystem faerieParticles;
     private ParticleSystem circleParticles;
+    private WindZone windZone;
     private int remainingGrenades;
     private Transform faerie;
     private Light faerieGlow;
     private Vector3 moveVector = Vector3.zero;
     public float moveTimer = 0f;
+    private CullingGroup cullGroup;
 
 	void Start ()
     {
         PopulateParticleSystemCache();
+        SetupStateBehaviours();
+        SetupWind();
+        SetupCullingGroup();
 
         faerieGlow = this.GetComponentInChildren<Light>();
 
         remainingGrenades = grenadeStock;
-        faerieSpeed = 1f;
+        faerieSpeed = happyFaerie.speed;
+    }
+
+    private void SetupStateBehaviours()
+    {
+        Animator anim = this.gameObject.GetComponent<Animator>();
+        FaerieStateBehaviour[] stateBehaviours = anim.GetBehaviours<FaerieStateBehaviour>();
+        for (int i = 0; i < stateBehaviours.Length; i++)
+        {
+            stateBehaviours[i].Setup(this);
+        }
     }
 
     private void PopulateParticleSystemCache()
@@ -45,6 +77,21 @@ public class FaerieCircle : MonoBehaviour
                 faerieParticles = pSystems[i];
             }
         }
+    }
+
+    private void SetupWind()
+    {
+        windZone = this.GetComponentInChildren<WindZone>();
+        windZone.windMain = happyFaerie.windForce;
+    }
+
+    private void SetupCullingGroup()
+    {
+        cullGroup = new CullingGroup();
+        cullGroup.targetCamera = Camera.main;
+        cullGroup.SetBoundingSpheres(new BoundingSphere[] { new BoundingSphere(transform.position, cullRadius) });
+        cullGroup.SetBoundingSphereCount(1);
+        cullGroup.onStateChanged += OnStateChanged;
     }
 
     void OnStateChanged(CullingGroupEvent cullEvent)
@@ -92,8 +139,35 @@ public class FaerieCircle : MonoBehaviour
 
     public void SetMood(bool angry)
     {
-        if (!angry)
+        if (angry)
+        {
+            SetValuesFromMood(angryFaerie);
+        }
+        else
+        {
             SpawnGrenade();
+            SetValuesFromMood(happyFaerie);
+        }
+    }
+
+    private void SetValuesFromMood(FaerieMood mood)
+    {
+        faerieSpeed = mood.speed;
+
+        ColorParticle(faerieParticles, mood.mainFaerieColor, mood.accentColor);
+        ColorParticle(circleParticles, mood.mainCircleColor, mood.accentColor);
+
+        faerieGlow.color = mood.glowColor;
+        faerieGlow.intensity = mood.glowIntensity;
+
+        windZone.windMain = mood.windForce;
+        NavMesh.SetAreaCost(NavMesh.GetAreaFromName("FaerieCircle"), mood.areaCost);
+    }
+
+    private void ColorParticle(ParticleSystem pSys, Color mainColor, Color accentColor)
+    {
+        ParticleSystem.MainModule pMain = pSys.main;
+        pMain.startColor = new ParticleSystem.MinMaxGradient(mainColor, accentColor);
     }
 
     private void SpawnGrenade()
@@ -121,6 +195,12 @@ public class FaerieCircle : MonoBehaviour
         Vector3 randomPoint = UnityEngine.Random.insideUnitSphere * radius;
         randomPoint += radius * Vector3.up;
         return (randomPoint - faerie.localPosition) / faerieSpeed;
+    }
+
+    void OnDestroy()
+    {
+        if (cullGroup != null)
+            cullGroup.Dispose();
     }
 
     void OnDrawGizmos()

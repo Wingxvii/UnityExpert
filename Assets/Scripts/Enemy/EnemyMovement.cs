@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 namespace Nightmare
 {
-    public class EnemyMovement : MonoBehaviour
+    public class EnemyMovement : PausibleObject
     {
         public float visionRange = 10f;
         public float hearingRange = 20f;
@@ -21,6 +21,8 @@ namespace Nightmare
         NavMeshAgent nav;
         public float timer = 0f;
 
+        private UnityAction<Vector3> listener;
+
         void Awake ()
         {
             player = GameObject.FindGameObjectWithTag ("Player").transform;
@@ -28,12 +30,17 @@ namespace Nightmare
             enemyHealth = GetComponent <EnemyHealth> ();
             nav = GetComponent <UnityEngine.AI.NavMeshAgent> ();
             nav.avoidancePriority += Random.Range(-5, 6);
+
+            listener = new UnityAction<Vector3>(HearPoint);
+
+            StartPausible();
         }
 
         void OnEnable()
         {
             nav.enabled = true;
             ClearPath();
+            EventManager.StartListening("Sound", HearPoint);
             ScaleVision(1f);
             IsPsychic();
             timer = 0f;
@@ -47,21 +54,38 @@ namespace Nightmare
 
         void Update ()
         {
-            // If both the enemy and the player have health left...
-            if (enemyHealth.CurrentHealth() > 0 && playerHealth.currentHealth > 0)
+            if (!isPaused)
             {
-                LookForPlayer();
-                WanderOrIdle();
-            }
-            else
-            {
-                nav.enabled = false;
+                // If both the enemy and the player have health left...
+                if (enemyHealth.CurrentHealth() > 0 && playerHealth.currentHealth > 0)
+                {
+                    LookForPlayer();
+                    WanderOrIdle();
+                }
+                else
+                {
+                    nav.enabled = false;
+                }
             }
         }
 
         void OnDestroy()
         {
             nav.enabled = false;
+            EventManager.StopListening("Sound", HearPoint);
+            StopPausible();
+        }
+
+        public override void OnPause()
+        {
+            if (nav.hasPath)
+                nav.isStopped = true;
+        }
+
+        public override void OnUnPause()
+        {
+            if (nav.hasPath)
+                nav.isStopped = false;
         }
 
         private void LookForPlayer()

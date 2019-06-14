@@ -4,7 +4,7 @@ using UnityEngine.Events;
 
 namespace Nightmare
 {
-    public class Grenade : MonoBehaviour
+    public class Grenade : PausibleObject
     {
         public float explosiveForce = 500f;
         public int explosiveDamage = 50;
@@ -15,29 +15,47 @@ namespace Nightmare
         Rigidbody rb;
         ParticleSystem ps;
         MeshRenderer mr;
+        TrailRenderer tr;
         float timer = 0f;
         float destroyWait;
+        UnityAction<Vector3> listener;
 
         void Awake()
         {
             rb = this.GetComponent<Rigidbody>();
             mr = this.GetComponent<MeshRenderer>();
+            tr = this.GetComponentInChildren<TrailRenderer>();
             ps = this.GetComponentInChildren<ParticleSystem>();
             
             ParticleSystem.MainModule pMain = ps.main;
             destroyWait = Mathf.Max(pMain.startLifetime.constantMin, pMain.startLifetime.constantMax);
+
+            listener = new UnityAction<Vector3>(Shoot);
+            EventManager.StartListening("ShootGrenade", Shoot);
+
+            StartPausible();
+        }
+
+        void OnDestroy()
+        {
+            StopPausible();
+            EventManager.StopListening("ShootGrenade", Shoot);
         }
 
         void OnEnable()
         {
             timer = 0f;
             mr.enabled = true;
+            tr.enabled = false;
             ps.Stop();
             isPickup = true;
         }
 
         void Update()
-        {            
+        {
+            if (isPaused)
+                return;
+            
             if (timer > 0f)
             {
                 timer -= Time.deltaTime;
@@ -54,10 +72,8 @@ namespace Nightmare
             {
                 if (coll.tag == "Player")
                 {
+                    EventManager.TriggerEvent("GrenadePickup");
                     Disable();
-                    PlayerShooting shooting = FindObjectOfType<PlayerShooting>();
-                    if (shooting != null)
-                        shooting.CollectGrenade();
                 }
             }
             else
@@ -76,6 +92,7 @@ namespace Nightmare
 
             isPickup = false;
             mr.enabled = true;
+            tr.enabled = true;
             timer = timeOut;
             rb.AddForce(force);
         }
@@ -84,7 +101,9 @@ namespace Nightmare
         {
             timer = -1;
             ps.Play();
+            tr.enabled = false;
             mr.enabled = false;
+            EventManager.TriggerEvent("Sound", this.transform.position);
 
             Collider[] colls = Physics.OverlapSphere(this.transform.position, explosiveRadius);
             for (int i = 0; i < colls.Length; i++)
